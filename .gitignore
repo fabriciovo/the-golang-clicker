@@ -1,0 +1,31 @@
+# Ignore o .env real (variáveis sensíveis)
+.env
+
+# Cache e binários gerados pelo Go
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# Pastas de dependências baixadas
+/vendor/
+
+# Cache do Go modules
+/go.sum
+
+# Binários compilados
+server/server
+tmp/
+
+# Logs
+*.log
+
+# Volumes, banco de dados e outros gerados pelo Docker
+pgdata/
+docker-compose.override.yml
+
+# VSCode settings (opcional, se for privado)
+.vscode/
