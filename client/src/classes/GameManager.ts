@@ -1,10 +1,11 @@
 import { IPlayer } from "@intefaces/IPlayer";
-import { Scene } from "phaser";
+import { GameObjects, Scene } from "phaser";
 
 class GameManager {
   private _player: IPlayer;
   private _scene: Scene;
   private _isLoadingPlayerData: boolean = true;
+  private _loadingText: GameObjects.Text;
   constructor(scene: Scene) {
     this._scene = scene;
    
@@ -13,15 +14,16 @@ class GameManager {
 
   private async _init(){
     await this._loadPlayer();
-    this._isLoadingPlayerData = false;
+    this.SetLoading(false);
   }
 
   public create(): void {
-
+    this._loadingText = new GameObjects.Text(this._scene, 0,0, "dasdsa", {fontFamily: "Go Mono, monospace"});
+    this._scene.add.existing(this._loadingText);
   }
 
   public update(): void {
-
+    this._loadingText.text =!this._isLoadingPlayerData ? "Loading..." : "aaaaaa" ;
   }
 
   private async _loadPlayer(): Promise<void> {
@@ -56,6 +58,17 @@ class GameManager {
       return player as IPlayer;
     }
     return null;
+  }
+
+
+
+  public SetLoading(isLoading: boolean): void {
+    this._isLoadingPlayerData = isLoading;
+    this._dispatchLoadingEvent(isLoading);
+  }
+
+  private _dispatchLoadingEvent(isLoading: boolean): void {
+    this._scene.events.emit('player-loading-changed', isLoading);
   }
 
 
