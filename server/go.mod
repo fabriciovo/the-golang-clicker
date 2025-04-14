@@ -4,7 +4,10 @@ go 1.24.2
 
 require github.com/gorilla/mux v1.8.1
 
-require github.com/joho/godotenv v1.5.1 // indirect
+require (
+	github.com/felixge/httpsnoop v1.0.3 // indirect
+	github.com/joho/godotenv v1.5.1 // indirect
+)
 
 require (
 	github.com/bytedance/sonic v1.11.6 // indirect
@@ -19,6 +22,7 @@ require (
 	github.com/go-playground/validator/v10 v10.20.0 // indirect
 	github.com/goccy/go-json v0.10.2 // indirect
 	github.com/google/uuid v1.6.0
+	github.com/gorilla/handlers v1.5.2
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.7 // indirect
 	github.com/leodido/go-urn v1.4.0 // indirect

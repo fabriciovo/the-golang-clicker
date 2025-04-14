@@ -4,11 +4,16 @@ import { Scene } from "phaser";
 class GameManager {
   private _player: IPlayer;
   private _scene: Scene;
-  private _isLoadingPlayerData: boolean;
+  private _isLoadingPlayerData: boolean = true;
   constructor(scene: Scene) {
     this._scene = scene;
-    this._loadPlayer();
+   
+    this._init();
+  }
 
+  private async _init(){
+    await this._loadPlayer();
+    this._isLoadingPlayerData = false;
   }
 
   public create(): void {
@@ -39,13 +44,13 @@ class GameManager {
   }
 
   private async _createNewPlayer(): Promise<IPlayer> {
-    const response = await fetch(`${import.meta.env.BASE_URL}/api/player`, { method: 'POST' });
+    const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/player/init`, { method: 'POST' });
     const newPlayer = await response.json();
     return newPlayer as IPlayer;
   }
 
   private async _fetchPlayer(id: string): Promise<IPlayer | null> {
-    const response = await fetch(`${import.meta.env.BASE_URL}/api/player/${id}`, { method: 'GET' });
+    const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/player/${id}`, { method: 'GET' });
     if (response.ok) {
       const player = await response.json();
       return player as IPlayer;
