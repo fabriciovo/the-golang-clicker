@@ -16,8 +16,6 @@ export class Game extends Scene {
     preload(): void {
         this.load.setPath('assets');
         this.load.image('golang', 'golang.png');
-
-
     }
 
     create(): void {
