@@ -29,7 +29,7 @@ class GOLang extends GameObjects.Image {
 
     private _centerGolang(): void {
         const centerX = this.scene.cameras.main.width / 2;
-        const centerY = this.scene.cameras.main.height / 2;
+        const centerY = this.scene.cameras.main.height / 2 - 160;
         this.setPosition(centerX, centerY);
     }
 }

@@ -86,19 +86,15 @@ class GameManager {
     }
   }
 
-
+  private _dispatchLoadingEvent(isLoading: boolean): void {
+    this._scene.events.emit('player-loading-changed', isLoading);
+  }
 
   public SetLoading(isLoading: boolean): void {
     this._isLoadingPlayerData = isLoading;
     this._loadingText.text = isLoading ? "Loading..." : "" ;
     this._dispatchLoadingEvent(isLoading);
   }
-
-  private _dispatchLoadingEvent(isLoading: boolean): void {
-    this._scene.events.emit('player-loading-changed', isLoading);
-  }
-
-
 
 }
 
