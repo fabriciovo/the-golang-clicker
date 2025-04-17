@@ -12,7 +12,7 @@ class GOLang extends GameObjects.Image {
         this.setScale(0.5);
         this.setInteractive({ useHandCursor: true });
 
-        this.on('pointerdown', this._onClick);
+        this.on('pointerdown', this._dispatchClickEvent);
 
         this._centerGolang();
 
@@ -23,8 +23,8 @@ class GOLang extends GameObjects.Image {
 
     }
 
-    private _onClick(): void {
-
+    private _dispatchClickEvent(): void {
+        this.scene.events.emit('player-click');
     }
 
     private _centerGolang(): void {

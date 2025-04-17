@@ -34,3 +34,22 @@ func (s *PlayerService) CreatePlayer() (*model.PlayerModel, error) {
 
 	return player, nil
 }
+
+func (s *PlayerService) GetPlayer(id string) (*model.PlayerModel, error) {
+	player, err := s.repository.GetByID(id)
+	if err != nil {
+		return nil, err
+	}
+	if player == nil {
+		return nil, nil
+	}
+	return player, nil
+}
+
+func (s *PlayerService) SavePlayer(playerData *model.PlayerModel) error {
+	err := s.repository.Save(playerData)
+	if err != nil {
+		return err
+	}
+	return nil
+}

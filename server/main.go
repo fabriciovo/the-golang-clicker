@@ -5,13 +5,14 @@ import (
 	"net/http"
 	"os"
 
-	"the-golang-clicker/api/handlers"
+	handlersLocal "the-golang-clicker/api/handlers"
 	"the-golang-clicker/api/repositories"
 	"the-golang-clicker/api/routes"
 	"the-golang-clicker/api/services"
 
 	"the-golang-clicker/database"
 
+	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
 )
@@ -27,9 +28,9 @@ func main() {
 	playerRepo := repositories.NewPlayerPostgresRepository(database.DB)
 	playerService := services.NewPlayerService(playerRepo)
 
-	handlers.SetPlayerService(playerService)
+	handlersLocal.SetPlayerService(playerService)
 
-	router := mux.NewRouter()
+	router := mux.NewRouter().StrictSlash(true)
 
 	routes.RegisterPlayerRoutes(router)
 
@@ -43,5 +44,14 @@ func main() {
 
 	fmt.Println("Server is running on localhost:8080")
 
-	http.ListenAndServe(":8080", router)
+	fmt.Println("🔗 All routes start here")
+	router.Walk(func(route *mux.Route, router *mux.Router, ancestors []*mux.Route) error {
+		tpl, _ := route.GetPathTemplate()
+		methods, _ := route.GetMethods()
+		fmt.Println("🔗 All routes:", methods, tpl)
+		return nil
+	})
+	fmt.Println("🔗 All routes end here")
+
+	http.ListenAndServe(":8080", corsAllowed(router))
 }
