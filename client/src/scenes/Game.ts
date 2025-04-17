@@ -5,7 +5,6 @@ import { Scene, GameObjects } from 'phaser';
 export class Game extends Scene {
     private _golang: GOLang;
     private _gameManager: GameManager;
-    private _startGame: boolean;
 
     constructor() {
         super('Game');

@@ -7,6 +7,7 @@ class GameManager {
   private _isLoadingPlayerData: boolean = true;
   private _loadingText: GameObjects.Text;
   private _apiErrorText: GameObjects.Text;
+  private _coinsText: GameObjects.Text;
   constructor(scene: Scene) {
     this._scene = scene;
    
@@ -18,11 +19,15 @@ class GameManager {
   }
 
   public create(): void {
+    const centerX = this._scene.cameras.main.width / 2;
+    const centerY = this._scene.cameras.main.height / 2;
+
     this._loadingText = new GameObjects.Text(this._scene, 0,0, "Loading...", {fontFamily: "Go Mono, monospace"});
     this._apiErrorText = new GameObjects.Text(this._scene, 0,10, "", {fontFamily: "Go Mono, monospace"});
-
+    this._coinsText = new GameObjects.Text(this._scene, centerX,centerY, "0",{fontFamily: "Go Mono, monospace"})
     this._scene.add.existing(this._loadingText);
     this._scene.add.existing(this._apiErrorText);
+    this._scene.add.existing(this._coinsText);
 
 
     this._init();
@@ -30,6 +35,10 @@ class GameManager {
   }
 
   public update(): void {
+    if(this._player){
+      this._coinsText.text = this._player.coins.toString();
+    }
+
   }
 
   private async _loadPlayer(): Promise<void> {
@@ -84,6 +93,10 @@ class GameManager {
       this.SetLoading(false)
       throw new Error(err.message);
     }
+  }
+
+  private async startCps(): Promise<void> {
+
   }
 
   private _dispatchLoadingEvent(isLoading: boolean): void {
