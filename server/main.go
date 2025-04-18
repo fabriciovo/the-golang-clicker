@@ -38,7 +38,7 @@ func main() {
 
 	corsAllowed := handlers.CORS(
 		handlers.AllowedOrigins([]string{frontendURL}),
-		handlers.AllowedMethods([]string{"GET", "POST", "OPTIONS"}),
+		handlers.AllowedMethods([]string{"GET", "POST", "PUT", "OPTIONS"}),
 		handlers.AllowedHeaders([]string{"Content-Type"}),
 	)
 

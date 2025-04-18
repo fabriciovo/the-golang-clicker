@@ -26,6 +26,7 @@ export class Game extends Scene {
     }
 
     update(): void {
+        this._gameManager.update();
     }
 
     private _onPlayerLoadingChanged(isLoading: boolean): void {

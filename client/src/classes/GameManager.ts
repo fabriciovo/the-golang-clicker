@@ -13,6 +13,7 @@ class GameManager {
   private _upgradeList: IUpgrade[] | undefined = [];
   private _refreshInterval: number = 5000;
   private _updatePlayerTimer: Phaser.Time.TimerEvent;
+  private _cps: Phaser.Time.TimerEvent;
 
   constructor(scene: Scene) {
     this._scene = scene;
@@ -114,6 +115,15 @@ class GameManager {
         await this._savePlayerData();
       }
     });
+
+    this._cps = this._scene.time.addEvent({
+      delay: 1000,
+      loop: true,
+      callback: async () => {
+        await this._savePlayerData();
+      }
+    });
+
   }
   
   private async _savePlayerData(): Promise<void> {
@@ -135,6 +145,7 @@ class GameManager {
   }
 
   private _playerClick():void{
+    console.log("sdasd")
     this._player.coins += this._player.clickForce;
   }
 

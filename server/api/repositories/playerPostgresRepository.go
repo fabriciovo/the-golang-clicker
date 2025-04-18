@@ -16,7 +16,7 @@ func NewPlayerPostgresRepository(db *sql.DB) *PlayerPostgresRepository {
 }
 
 func (r *PlayerPostgresRepository) Save(player *models.PlayerModel) error {
-	query := "INSERT INTO players (id, coins, click_force, cps, level) VALUES ($1, $2, $3, $4, $5)"
+	query := "UPDATE players SET coins = $2, click_force = $3, cps = $4, level = $5 WHERE id = $1"
 	_, err := r.db.Exec(query, player.ID, player.Coins, player.ClickForce, player.Cps, player.Level)
 	return err
 }
