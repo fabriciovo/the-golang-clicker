@@ -22,12 +22,10 @@ func InitPlayer(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	println("Plyer ID: ", player.ID)
+	println("Player ID: ", player.ID)
 
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(map[string]string{
-		"id": player.ID,
-	})
+	json.NewEncoder(w).Encode(player)
 }
 
 func GetPlayer(w http.ResponseWriter, r *http.Request) {

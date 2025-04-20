@@ -1,10 +1,10 @@
 import { IPlayer } from "@intefaces/IPlayer";
 import { IUpgrade } from "@intefaces/IUpgrade";
-import { GameObjects, Scene } from "phaser";
+import { GameObjects, Scene, Time } from "phaser";
 import Upgrade from "./Upgrade";
 
 class GameManager {
-  private _player: IPlayer;
+  private _player: IPlayer | undefined = undefined;
   private _scene: Scene;
   private _isLoadingPlayerData: boolean = true;
   private _loadingText: GameObjects.Text;
@@ -12,14 +12,11 @@ class GameManager {
   private _coinsText: GameObjects.Text;
   private _upgradeList: IUpgrade[] | undefined = [];
   private _refreshInterval: number = 5000;
-  private _updatePlayerTimer: Phaser.Time.TimerEvent;
-  private _cps: Phaser.Time.TimerEvent;
-
+  private _updatePlayerTimer: Time.TimerEvent;
+  private _cps: Time.TimerEvent;
+  private _upgradeContainer: GameObjects.Container;
   constructor(scene: Scene) {
     this._scene = scene;
-   
-    
-    
   }
 
   private async _init(): Promise<void> {
@@ -33,12 +30,17 @@ class GameManager {
     const centerX = this._scene.cameras.main.width / 2;
     const centerY = this._scene.cameras.main.height / 2;
 
-    this._loadingText = new GameObjects.Text(this._scene, 0,0, "Loading...", {fontFamily: "Go Mono, monospace"});
-    this._apiErrorText = new GameObjects.Text(this._scene, 0,10, "", {fontFamily: "Go Mono, monospace"});
-    this._coinsText = new GameObjects.Text(this._scene, centerX,centerY + 80, "0",{fontFamily: "Go Mono, monospace", fontSize: 46})
+    this._loadingText = new GameObjects.Text(this._scene, 0, 0, "Loading...", { fontFamily: "Go Mono, monospace" });
+    this._apiErrorText = new GameObjects.Text(this._scene, 0, 10, "", { fontFamily: "Go Mono, monospace" });
+    this._coinsText = new GameObjects.Text(this._scene, centerX, centerY + 80, "0", { fontFamily: "Go Mono, monospace", fontSize: 46 });
+    this._upgradeContainer = new GameObjects.Container(this._scene, centerX, centerY + 120);
+
+
     this._scene.add.existing(this._loadingText);
     this._scene.add.existing(this._apiErrorText);
     this._scene.add.existing(this._coinsText);
+    this._scene.add.existing(this._upgradeContainer);
+
     this._scene.events.on('player-click', this._playerClick, this);
 
 
@@ -47,14 +49,14 @@ class GameManager {
   }
 
   public update(): void {
-    if(this._player){
+    if (this._player) {
+      console.log(this._player)
       this._coinsText.text = this._player.coins.toString();
     }
-
   }
 
   private async _loadPlayer(): Promise<void> {
-    try{
+    try {
       const playerId = localStorage.getItem('playerId');
       if (!playerId) {
         const newPlayer = await this._createNewPlayer();
@@ -62,21 +64,16 @@ class GameManager {
         this._player = newPlayer;
       } else {
         const player = await this._fetchPlayer(playerId);
-        if (player) {
-          this._player = player;
-        } else {
-          const newPlayer = await this._createNewPlayer();
-          localStorage.setItem('playerId', newPlayer.id);
-          this._player = newPlayer;
-        }
+        this._player = player!;
       }
-    }catch(err: any){
+      console.log(this._player)
+    } catch (err: any) {
       this._apiErrorText.text = "API ERROR";
       this.SetLoading(false)
       throw new Error(err.message);
     }
 
-    
+
   }
 
   private async _createNewPlayer(): Promise<IPlayer> {
@@ -84,7 +81,7 @@ class GameManager {
       const response = await fetch(`${import.meta.env.VITE_BASE_URL}/player/init`, { method: 'POST' });
       const newPlayer = await response.json();
       return newPlayer as IPlayer;
-    }catch(err:any) {
+    } catch (err: any) {
       this._apiErrorText.text = "API ERROR";
       this.SetLoading(false)
       throw new Error(err.message);
@@ -92,15 +89,12 @@ class GameManager {
 
   }
 
-  private async _fetchPlayer(id: string): Promise<IPlayer | null> {
+  private async _fetchPlayer(id: string): Promise<IPlayer | undefined> {
     try {
       const response = await fetch(`${import.meta.env.VITE_BASE_URL}/player/${id}`, { method: 'GET' });
-      if (response.ok) {
-        const player = await response.json();
-        return player as IPlayer;
-      }
-      return null;
-    }catch(err:any){
+      const player = await response.json();
+      return player as IPlayer;
+    } catch (err: any) {
       this._apiErrorText.text = "API ERROR";
       this.SetLoading(false)
       throw new Error(err.message);
@@ -120,16 +114,16 @@ class GameManager {
       delay: 1000,
       loop: true,
       callback: async () => {
-        await this._savePlayerData();
+        await this._addCoins();
       }
     });
 
   }
-  
+
   private async _savePlayerData(): Promise<void> {
     const playerId = localStorage.getItem('playerId');
     if (!playerId) return;
-  
+
     try {
       await fetch(`${import.meta.env.VITE_BASE_URL}/player/save`, {
         method: 'PUT',
@@ -144,30 +138,36 @@ class GameManager {
     this._scene.events.emit('player-loading-changed', isLoading);
   }
 
-  private _playerClick():void{
-    console.log("sdasd")
+  private _playerClick(): void {
+    if(!this._player) return;
     this._player.coins += this._player.clickForce;
   }
 
+  private _addCoins(): void {
+    if(!this._player) return;
+    this._player.coins += this._player.cps;
+  }
+
   private async _loadUpgrades(): Promise<void> {
-    try{
-      const response = await fetch(`${import.meta.env.VITE_BASE_URL}/upgradeList`, { method: 'GET' });
-      if (response.ok){
+    try {
+      const response = await fetch(`${import.meta.env.VITE_BASE_URL}/gm/upgradeList`, { method: 'GET' });
+      if (response.ok) {
         const upgrades = await response.json() as IUpgrade[];
-        upgrades.forEach((upgrade:IUpgrade, index:number) => {
-          const _upgrade = new Upgrade(upgrade.name, upgrade.cost, this._scene,0*index,0, upgrade.textureName);
-          this._scene.add.existing(_upgrade);
-        })
+        console.log(upgrades)
+        // upgrades.forEach((upgrade: IUpgrade, index: number) => {
+        //   const _upgrade = new Upgrade(upgrade.name, upgrade.cost, this._scene, 0 * index, 0, upgrade.textureName);
+        //   this._upgradeContainer.add(_upgrade);
+        // })
       }
-    }catch(err: any){
+    } catch (err: any) {
       this._apiErrorText.text = "API ERROR";
       throw Error(err.message);
     }
   }
-  
+
   public SetLoading(isLoading: boolean): void {
     this._isLoadingPlayerData = isLoading;
-    this._loadingText.text = isLoading ? "Loading..." : "" ;
+    this._loadingText.text = isLoading ? "Loading..." : "";
     this._dispatchLoadingEvent(isLoading);
   }
 

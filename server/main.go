@@ -25,14 +25,22 @@ func main() {
 		panic(err)
 	}
 
+	//Init Repo
 	playerRepo := repositories.NewPlayerPostgresRepository(database.DB)
+	gameManagerRepo := repositories.NewGameManagerPostgresRepository(database.DB)
+
+	//Init Sevices
 	playerService := services.NewPlayerService(playerRepo)
+	gameManagerService := services.NewGameManagerService(gameManagerRepo)
 
+	//Set handlers
 	handlersLocal.SetPlayerService(playerService)
+	handlersLocal.SetGameManagerService(gameManagerService)
 
+	//Set routes
 	router := mux.NewRouter().StrictSlash(true)
-
 	routes.RegisterPlayerRoutes(router)
+	routes.RegisterGameManagerRoutes(router)
 
 	frontendURL := os.Getenv("FRONTEND_URL")
 
@@ -48,7 +56,7 @@ func main() {
 	router.Walk(func(route *mux.Route, router *mux.Router, ancestors []*mux.Route) error {
 		tpl, _ := route.GetPathTemplate()
 		methods, _ := route.GetMethods()
-		fmt.Println("🔗 All routes:", methods, tpl)
+		fmt.Println("🔗 Route:", methods, tpl)
 		return nil
 	})
 	fmt.Println("🔗 All routes end here")

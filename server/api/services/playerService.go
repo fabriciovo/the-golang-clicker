@@ -36,6 +36,7 @@ func (s *PlayerService) CreatePlayer() (*model.PlayerModel, error) {
 }
 
 func (s *PlayerService) GetPlayer(id string) (*model.PlayerModel, error) {
+	println("GetPlayer: ", id)
 	player, err := s.repository.GetByID(id)
 	if err != nil {
 		return nil, err
@@ -43,6 +44,9 @@ func (s *PlayerService) GetPlayer(id string) (*model.PlayerModel, error) {
 	if player == nil {
 		return nil, nil
 	}
+
+	println("Player: ", player)
+
 	return player, nil
 }
 

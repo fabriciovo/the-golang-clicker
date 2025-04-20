@@ -3,6 +3,7 @@ version: "3.8"
 services:
   db:
     image: postgres:14
+    container_name: server-db-1
     restart: always
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
@@ -12,7 +13,7 @@ services:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
-      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
 
   backend:
     build:
