@@ -11,15 +11,17 @@ class Upgrade  extends GameObjects.Image {
 
 
     public create():void{
-
+        this.setInteractive({ useHandCursor: true });
+        
+        this.on('pointerdown', this._dispatchBuyEvent);
     }
 
     public update(): void {
         
     }
 
-    public buy():void{
-
+    private _dispatchBuyEvent():void{
+        this.scene.events.emit('buy-upgrade', this);
     }
 
     
