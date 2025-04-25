@@ -24,7 +24,7 @@ func (s *PlayerService) CreatePlayer() (*model.PlayerModel, error) {
 		Coins:      0,
 		Cps:        0,
 		Level:      1,
-		Upgrades:   make(map[string]int),
+		Upgrades:   make(map[string]bool),
 	}
 
 	err := s.repository.Save(player)

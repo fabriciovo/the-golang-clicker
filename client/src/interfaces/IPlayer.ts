@@ -4,6 +4,6 @@ export interface IPlayer {
     coins: number;
     cps: number;
     level: number;
-    upgrades: Record<string, number>;
+    upgrades: Record<string, boolean>;
   }
   

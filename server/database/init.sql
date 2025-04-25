@@ -21,77 +21,87 @@ CREATE TABLE
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
 INSERT INTO
-    upgrades (id, name, textureName, cost, price)
+    upgrades (id, name, textureName, cost, price, cps)
 VALUES
     (
         gen_random_uuid (),
         'Double Click',
         'double_click',
         100,
-        150
+        150,
+        1
     ),
     (
         gen_random_uuid (),
         'Auto Clicker',
         'auto_clicker',
         200,
-        300
+        300,
+        2
     ),
     (
         gen_random_uuid (),
         'Mega Click',
         'mega_click',
         500,
-        750
+        750,
+        3
     ),
     (
         gen_random_uuid (),
         'Coin Magnet',
         'coin_magnet',
         800,
-        1200
+        1200,
+        4
     ),
     (
         gen_random_uuid (),
         'Turbo Touch',
         'turbo_touch',
         1500,
-        2000
+        2000,
+        5
     ),
     (
         gen_random_uuid (),
         'Golden Click',
         'golden_click',
         3000,
-        3500
+        3500,
+        100
     ),
     (
         gen_random_uuid (),
         'Laser Tap',
         'laser_tap',
         4500,
-        5000
+        5000,
+        20
     ),
     (
         gen_random_uuid (),
         'Quantum Fingers',
         'quantum_fingers',
         6000,
-        7500
+        7500,
+        1
     ),
     (
         gen_random_uuid (),
         'Atomic Touch',
         'atomic_touch',
         8000,
-        9500
+        9500,
+        1
     ),
     (
         gen_random_uuid (),
         'Divine Power',
         'divine_power',
         10000,
-        12000
+        12000,
+        1
     );
 
 \! echo "HERE YOUR DEBUG MSG!"

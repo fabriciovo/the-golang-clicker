@@ -11,7 +11,7 @@ class GameManager {
   private _loadingText: GameObjects.Text;
   private _apiErrorText: GameObjects.Text;
   private _coinsText: GameObjects.Text;
-  private _upgradeList: IUpgrade[] | undefined = [];
+  private _cpsText: GameObjects.Text;
   private _refreshInterval: number = 5000;
   private _updatePlayerTimer: Time.TimerEvent;
   private _cps: Time.TimerEvent;
@@ -34,12 +34,15 @@ class GameManager {
     this._loadingText = new GameObjects.Text(this._scene, 0, 0, "Loading...", { fontFamily: "Go Mono, monospace" });
     this._apiErrorText = new GameObjects.Text(this._scene, 0, 10, "", { fontFamily: "Go Mono, monospace" });
     this._coinsText = new GameObjects.Text(this._scene, centerX, centerY + 80, "0", { fontFamily: "Go Mono, monospace", fontSize: 46 });
+    this._cpsText = new GameObjects.Text(this._scene, centerX, centerY + 40, "0", { fontFamily: "Go Mono, monospace", fontSize: 32 });
 
     this._scene.add.existing(this._loadingText);
     this._scene.add.existing(this._apiErrorText);
     this._scene.add.existing(this._coinsText);
+    this._scene.add.existing(this._cpsText);
 
     this._scene.events.on('player-click', this._playerClick, this);
+    this._scene.events.on('buy-upgrade', this._buyUpgrade, this);
 
 
     this._init();
@@ -49,6 +52,8 @@ class GameManager {
   public update(): void {
     if (this._player) {
       this._coinsText.text = this._player.coins.toString();
+      this._cpsText.text = this._player.cps.toString();
+
     }
   }
 
@@ -68,8 +73,6 @@ class GameManager {
       this.SetLoading(false)
       throw new Error(err.message);
     }
-
-
   }
 
   private async _createNewPlayer(): Promise<IPlayer> {
@@ -134,9 +137,16 @@ class GameManager {
     this._scene.events.emit('player-loading-changed', isLoading);
   }
 
+
+  private _buyUpgrade(_upgrade: Upgrade) {
+    console.log(_upgrade);
+    if (!this._player) return;
+    _upgrade.UnlockUpgrade(this._player, this._upgradeContainer);
+  }
+
   private _playerClick(): void {
     if (!this._player) return;
-    this._player.coins += this._player.clickForce;
+    this._player.coins += 100;
   }
 
   private _addCoins(): void {
@@ -151,7 +161,7 @@ class GameManager {
         const upgrades = await response.json() as IUpgrade[];
         const centerX = this._scene.cameras.main.width / 2;
         const centerY = this._scene.cameras.main.height / 2;
-        new UpgradeList(this._scene, centerX - 190, centerY + 190, upgrades);
+        this._upgradeContainer = new UpgradeList(this._scene, centerX - 190, centerY + 190, upgrades);
       }
     } catch (err: any) {
       this._apiErrorText.text = "API ERROR";
