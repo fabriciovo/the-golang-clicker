@@ -64,7 +64,7 @@ export default class UpgradeList extends GameObjects.Container {
 
   private updateScrollBounds() {
     this._upgradeList.forEach((item, i) => {
-      item.x = i * ITEM_SPACING;
+      item.x = i * ITEM_SPACING  + ITEM_OFFSET_X;
     });
 
     const contentWidth = this._upgradeList.length * ITEM_SPACING;
@@ -76,7 +76,6 @@ export default class UpgradeList extends GameObjects.Container {
 
   public removeUpgrade(_name: string) {
     this._upgradeList = this._upgradeList.filter(el => el.name !== _name);
-    console.log(this._upgradeList)
     this.updateScrollBounds();
   }
 
