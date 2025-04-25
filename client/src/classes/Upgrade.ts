@@ -5,7 +5,6 @@ import UpgradeList from "./UpgradeList";
 
 
 class Upgrade extends GameObjects.Container {
-    private _name: string;
     private _cost: number;
     private _cps: number;
     private _costText: GameObjects.Text;
@@ -13,7 +12,7 @@ class Upgrade extends GameObjects.Container {
 
     constructor(name: string, cost: number, cps: number, scene: Scene, x: number, y: number, texture: string | Textures.Texture, frame?: string | number) {
         super(scene, x, y)
-        this._name = name;
+        this.name = name;
         this._cost = cost;
         this._cps = cps;
         console.log(name);
@@ -36,11 +35,11 @@ class Upgrade extends GameObjects.Container {
     public UnlockUpgrade(_player: IPlayer, _upgradeContainer: UpgradeList): void {
         if (_player.coins >= this._cost) {
             _player.cps += this._cps;
-            _player.upgrades[this._name] = true;
+            _player.upgrades[this.name] = true;
             _player.coins -= this._cost;
-            _upgradeContainer.removeUpgrade(this._name);
+            _upgradeContainer.removeUpgrade(this.name);
             this.destroy();
-        }   
+        }
     }
 
     public GetCps(): number {

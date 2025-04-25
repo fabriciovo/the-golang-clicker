@@ -2,10 +2,10 @@ import Phaser, { GameObjects, Geom, Input, Math as PMath } from "phaser";
 import { IUpgrade } from "@intefaces/IUpgrade";
 import Upgrade from "./Upgrade";
 
-const VIEW_WIDTH   = 380;
-const VIEW_HEIGHT  = 128;
-const ITEM_SPACING = 60;     
-const ITEM_OFFSET_X = 32;    
+const VIEW_WIDTH = 380;
+const VIEW_HEIGHT = 128;
+const ITEM_SPACING = 60;
+const ITEM_OFFSET_X = 32;
 const ITEM_OFFSET_Y = 16;
 
 export default class UpgradeList extends GameObjects.Container {
